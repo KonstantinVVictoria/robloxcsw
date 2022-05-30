@@ -1,0 +1,23 @@
+{
+  "name": "robloxcsw",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "discord.js": "^13.7.0",
+    "mongodb": "^4.6.0",
+    "next": "12.1.6",
+    "nextjs-cors": "^2.1.1",
+    "react": "18.1.0",
+    "react-dom": "18.1.0"
+  },
+  "devDependencies": {
+    "eslint": "8.16.0",
+    "eslint-config-next": "12.1.6"
+  }
+}
