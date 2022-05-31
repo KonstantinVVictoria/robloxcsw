@@ -121,6 +121,9 @@ const Commit = ({ game, note, user, timeStamp }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        border: "1px solid black",
+        padding: "1rem",
+        borderRadius: "15px",
       }}
     >
       <h2 style={{ margin: "0.8rem" }}>
