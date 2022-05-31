@@ -12,19 +12,21 @@ export default async function handler(req, res) {
 
   try {
     let { key, data } = req.body;
-    if (key === undefined) res.status(400).json({ error: "Bad request" });
+    if (key === undefined)
+      return res.status(400).json({ error: "Bad request" });
     let { db } = await connectToDatabase();
     let collection = await getCollection(db, "apikeys");
     let keyExists = await checkKey(collection, key);
 
-    if (!keyExists) res.status(403).json({ error: "Unauthorized request" });
+    if (!keyExists)
+      return res.status(403).json({ error: "Unauthorized request" });
     console.log(data);
     const { message, commit } = parseData(data);
     const bot = await client;
     const channel = await bot.channels.fetch("980161368923713536");
     await channel.send(message);
     await db.collection("commits").insertOne(commit);
-    return res.status(200).json({ status: 200, message: "Successful" });
+    return res.json({ status: 200, message: "Successful" });
   } catch (error) {
     console.log(error);
     return res.status(500);

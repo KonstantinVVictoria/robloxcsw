@@ -1,8 +1,19 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { useState } from "react";
 export default function Home() {
+  const [dataStats, setDataStates] = useState([]);
+  const [commits, setCommits] = useState([]);
+  const DataStatsComponents = dataStats.map((data, i) => (
+    <DataPiece key={i + "data"} {...data} />
+  ));
+  const CommitComponents = commits.map((commit, i) => {
+    {
+      console.log(commit);
+      return <Commit key={i + "commit"} {...commit} />;
+    }
+  });
   return (
     <div className={styles.container}>
       <Head>
@@ -12,44 +23,56 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        {commits.length ? <CommitPanel>{CommitComponents}</CommitPanel> : null}
+        {dataStats.length ? (
+          <>
+            <h1>Data Stats</h1>
+            <div style={{ border: "1px solid black", padding: "1rem" }}>
+              {DataStatsComponents}
+            </div>
+          </>
+        ) : null}
+        <div>
+          <p>API Key</p>
+          <input id="apikey" />
         </div>
+        <div id="DataStores" style={{ display: "flex" }}></div>
+        <button
+          onClick={async () => {
+            const key = document.getElementById("apikey").value;
+            const { data } = await fetch("api/RobloxStore/getDataStats", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                key: key,
+              }),
+              method: "POST",
+            }).then((resp) => resp.json());
+            setCommits([]);
+            setDataStates(data ? data : []);
+          }}
+        >
+          Get Data Stats
+        </button>
+        <button
+          onClick={async () => {
+            const key = document.getElementById("apikey").value;
+            const { data } = await fetch("api/RobloxGit/getCommits", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                key: key,
+              }),
+              method: "POST",
+            }).then((resp) => resp.json());
+            setDataStates([]);
+            setCommits(data ? data : []);
+          }}
+        >
+          Get Commits
+        </button>
       </main>
 
       <footer className={styles.footer}>
@@ -58,12 +81,63 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
 }
+const DataPiece = ({ itemName, stat }) => {
+  return (
+    <div style={{ display: "flex", gap: "1rem" }}>
+      <p>
+        <b>Item: </b> {itemName}
+      </p>
+      <p>
+        <b>Quantity: </b> {stat}
+      </p>
+    </div>
+  );
+};
+
+const CommitPanel = ({ children }) => {
+  return (
+    <>
+      <h1>Commit History</h1>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+        {children}
+      </div>
+    </>
+  );
+};
+
+const Commit = ({ game, note, user, timeStamp }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <h2 style={{ margin: "0.8rem" }}>
+        <b>User: </b>
+        {user.name}
+      </h2>
+      <img src={user.userPicture} />
+      <p style={{ margin: "0.8rem" }}>
+        <b>Game: </b>
+        {game.name}
+      </p>
+      <p style={{ margin: "0.8rem" }}>
+        <b>Time: </b>
+        {timeStamp}
+      </p>
+      <h2 style={{ margin: "0.2rem" }}>Note</h2>
+      <p style={{ maxWidth: "10rem", fontSize: "0.7rem" }}>{note}</p>
+    </div>
+  );
+};
