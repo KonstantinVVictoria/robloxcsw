@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
+
 export default function Home() {
   const [dataStats, setDataStates] = useState([]);
   const [commits, setCommits] = useState([]);
@@ -10,10 +11,31 @@ export default function Home() {
   ));
   const CommitComponents = commits.map((commit, i) => {
     {
-      console.log(commit);
       return <Commit key={i + "commit"} {...commit} />;
     }
   });
+
+  // fetch(
+  //   "https://api.notion.com/v1/databases/4a7b06d9f6fe450686e29f9d9fe504ee",
+  //   {
+  //     headers: {
+  //       Authorization:
+  //         "Bearer secret_CCsBUPbQzTK353NnSctN90pcr6mNXwCd4rGt8bKiGBg",
+  //       "Content-Type": "application/json",
+  //       "Notion-Version": "2022-02-22",
+  //     },
+  //     data: {
+  //       title: [
+  //         {
+  //           text: {
+  //             content: "Today'''s grocery list",
+  //           },
+  //         },
+  //       ],
+  //       properties: { created_time: "June 2, 2022 5:41 PM" },
+  //     },
+  //   }
+  // );
   return (
     <div className={styles.container}>
       <Head>
@@ -54,6 +76,22 @@ export default function Home() {
           }}
         >
           Get Data Stats
+        </button>
+        <button
+          onClick={async () => {
+            const key = document.getElementById("apikey").value;
+            await fetch("/api/Notion/SendTasks", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                key: key,
+              }),
+              method: "POST",
+            });
+          }}
+        >
+          SendTasks
         </button>
         <button
           onClick={async () => {
