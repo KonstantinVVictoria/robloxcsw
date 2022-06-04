@@ -25,7 +25,8 @@ export default async function handler(req, res) {
   let Tasks = query?.results;
   if (Tasks.length) {
     const bot = await client;
-    Tasks.forEach(async ({ properties, id }) => {
+    for (let i = 0; i < Tasks.length; i++) {
+      let { properties, id } = Tasks[i];
       await Notion.pages.update({
         page_id: id,
         properties: {
@@ -74,7 +75,7 @@ export default async function handler(req, res) {
           });
         })
       );
-    });
+    }
   }
   res.status(200).json({ successful: true });
 }
