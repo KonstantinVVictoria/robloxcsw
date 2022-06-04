@@ -68,8 +68,8 @@ export default async function handler(req, res) {
       }***\nDue around **${due_date ? due_date : ""}**\n**Task**\n> ${Task}`;
       await new Promise((resolve, reject) =>
         Object.keys(mailing_list).forEach((DiscordUser) => {
-          bot.users.fetch(DiscordUser).then((user) => {
-            user.send(message);
+          await bot.users.fetch(DiscordUser).then(async (user) => {
+            await user.send(message);
             resolve();
           });
         })

@@ -34,10 +34,9 @@ export default async function handler(req, res) {
     await channel.send(message);
     await db.collection("commits").insertOne(commit);
     let queryLength = await db.collection("commits").count({});
-    notion.pages.create(notionCommit(queryLength + 1, commit));
+    await notion.pages.create(notionCommit(queryLength + 1, commit));
     return res.json({ status: 200, message: "Successful" });
   } catch (error) {
-    console.log(error);
     return res.status(500);
   }
 }
