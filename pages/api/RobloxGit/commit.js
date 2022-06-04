@@ -31,10 +31,11 @@ export default async function handler(req, res) {
     const { message, commit } = parseData(data);
     const bot = await client;
     const channel = await bot.channels.fetch("980161368923713536");
-    // await channel.send(message);
+    await channel.send(message);
     await db.collection("commits").insertOne(commit);
     let queryLength = await db.collection("commits").count({});
-    let work = await notion.pages.create(notionCommit(queryLength + 1, commit));
+    notionCommit(queryLength + 1, commit);
+    await notion.pages.create(notionCommit(queryLength + 1, commit));
     return res.status(200).json({ status: 200, message: "Successful" });
   } catch (error) {
     console.log(error);
@@ -87,11 +88,7 @@ function notionCommit(i, { user, timeStamp, note, game, time }) {
   let NotionRobloxUser = user.name;
   let title = "Commit #" + i;
   if (time) {
-    let date = new Date(time);
-    let month = date.toLocaleString("default", { month: "long" });
-    let day = date.getDate();
-    let year = date.getFullYear();
-    NotionDate = new Date(`${month} ${day}, ${year}`).toISOString();
+    NotionDate = new Date(time).toISOString();
   } else {
     let string = timeStamp;
     string = string.split(",")[1].split(" ");
