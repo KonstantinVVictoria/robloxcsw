@@ -31,12 +31,13 @@ export default async function handler(req, res) {
     const { message, commit } = parseData(data);
     const bot = await client;
     const channel = await bot.channels.fetch("980161368923713536");
-    await channel.send(message);
+    // await channel.send(message);
     await db.collection("commits").insertOne(commit);
     let queryLength = await db.collection("commits").count({});
-    await notion.pages.create(notionCommit(queryLength + 1, commit));
-    return res.json({ status: 200, message: "Successful" });
+    let work = await notion.pages.create(notionCommit(queryLength + 1, commit));
+    return res.status(200).json({ status: 200, message: "Successful" });
   } catch (error) {
+    console.log(error);
     return res.status(500);
   }
 }
@@ -102,7 +103,7 @@ function notionCommit(i, { user, timeStamp, note, game, time }) {
   if (user.userPicture) {
     icon = {
       type: "external",
-      url: user.Picture,
+      external: { url: user.userPicture },
     };
   } else {
     icon = {
