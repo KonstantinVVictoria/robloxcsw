@@ -34,7 +34,7 @@ export default async function handler(req, res) {
           },
         },
       });
-      let mailing_list = {};
+      let mailing_list = [];
       let task_name = properties.Name.title[0].plain_text;
       let due_date = new Date(properties.Deadline.date.start);
       let month = due_date.toLocaleString("default", { month: "long" });
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         let member_id = properties.Lead.people[i].id;
         let Discord_id = DiscordUser[member_id];
         TeamLeads += member_name + " ";
-        mailing_list[Discord_id] = {};
+        if (Discord_id) mailing_list[Discord_id] = {};
       }
       let Peers = "";
       for (let i = 0; i < properties.Team.people.length; i++) {
@@ -56,13 +56,19 @@ export default async function handler(req, res) {
         let member_id = properties.Team.people[i].id;
         let Discord_id = DiscordUser[member_id];
         Peers += member_name + " ";
-        let message = `**New Task: ${task_name}**\nYour team leads are: **${TeamLeads}**\nYou will be working with: ***${Peers}***\nDue around **${due_date}**\n**Task**\n> ${Task}`;
-        if (Discord_id) mailing_list[Discord_id] = message;
+
+        if (Discord_id) mailing_list[Discord_id] = {};
       }
+      let message = `**New Task: ${
+        task_name ? task_name : ""
+      }**\nYour team leads are: **${
+        TeamLeads ? TeamLeads : ""
+      }**\nYou will be working with: ***${
+        Peers ? Peers : ""
+      }***\nDue around **${due_date ? due_date : ""}**\n**Task**\n> ${Task}`;
       await new Promise((resolve, reject) =>
-        Object.entries(mailing_list).forEach(([DiscordUser, message]) => {
+        Object.keys(mailing_list).forEach((DiscordUser) => {
           bot.users.fetch(DiscordUser).then((user) => {
-            console.log(user);
             user.send(message);
             resolve();
           });

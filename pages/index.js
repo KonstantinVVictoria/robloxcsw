@@ -80,7 +80,7 @@ export default function Home() {
         <button
           onClick={async () => {
             const key = document.getElementById("apikey").value;
-            await fetch("/api/Notion/SendTasks", {
+            await fetch("api/Notion/SendTasks", {
               headers: {
                 "Content-Type": "application/json",
               },
