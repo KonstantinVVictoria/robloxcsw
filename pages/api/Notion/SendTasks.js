@@ -66,7 +66,7 @@ export default async function handler(req, res) {
         TeamLeads ? TeamLeads : ""
       }**\nYou will be working with: ***${
         Peers ? Peers : ""
-      }***\nDue around **${due_date ? due_date : ""}**\n**Task**\n> ${Task}`;
+      }***\nDue around **${due_date ? due_date : ""}**\n**Task**\n\`${Task}\``;
       await new Promise((resolve, reject) =>
         Object.keys(mailing_list).forEach(async (DiscordUser) => {
           await bot.users.fetch(DiscordUser).then(async (user) => {
