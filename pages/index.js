@@ -111,6 +111,22 @@ export default function Home() {
         >
           Get Commits
         </button>
+        <button
+          onClick={() => {
+            const key = document.getElementById("apikey").value;
+            fetch("api/Notion/GetUsers", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                key: key,
+              }),
+              method: "POST",
+            });
+          }}
+        >
+          Get Notion IDs
+        </button>
       </main>
 
       <footer className={styles.footer}>
